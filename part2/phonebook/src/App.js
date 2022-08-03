@@ -1,26 +1,20 @@
 import { useState } from 'react'
-
-const ListName = ({ persons }) => {
-	return (
-		persons.map((x) => <li key={x.name}>{x.name} {x.number}</li>)
-	)
-}
-
-// const filteredName = ({ persons }) => {
-// 	let copyPersons = persons.filter(x => x.name === newName)
-// 	console.log(copyPersons)
-// }
+import Filter from './components/Filter'
+import ListName from "./components/ListName"
+import PersonForm from './components/PersonForm'
 
 const App = () => {
 	const [persons, setPersons] = useState([
-		{ name: 'Arto Hellas', number: '040-1234567' },
-		{ name: 'Ada Lovelace', number: '39-44-532322' },
-		{ name: 'Ben Anto', number: '040-9881232' },
+		{
+			name: 'Arto Hellas', number: '040-1234567'
+		},
+		{
+			name: 'Ben As', number: '041-223567'
+		}
 	])
 	const [newNumbers, setNumber] = useState('')
 	const [newName, setNewName] = useState('')
 	const [filtered, setFiltered] = useState('')
-	const [showAll, setShowAll] = useState(true)
 
 	const checkName = ({ persons }) => {
 		let names = []
@@ -54,40 +48,29 @@ const App = () => {
 	}
 
 	const handleFilter = (event) => {
-		console.log('I am filtered', filtered);
-		console.log('I am showAllNum', showAllNumbers);
 		setFiltered(event.target.value)
 	}
 
-	const showAllNumbers = showAll
-		? persons
-		: persons.filter(x => x.name.includes(filtered))
+	const showAllNumbers = persons.filter(x => x.name.includes(filtered))
 
 	return (
 		<div>
 			<h2>Phonebook</h2>
 			<div>
-				filter shown with <input onChange={handleFilter} />
+				<Filter handleFilter={handleFilter} />
 			</div>
-			<div>
-				<button onClick={() => setShowAll(!showAll)}>
-					show {showAll ? 'filtered' : 'all'}
-				</button>
-			</div>
+			<h2>Add a new person:</h2>
 			<form onSubmit={addPerson}>
 				<div>
-					name: <input value={newName} onChange={handlePersonChange} />
+					<PersonForm persons={persons} newName={newName} handlePersonChange={handlePersonChange} handleNumberChange={handleNumberChange} newNumbers={newNumbers} />
 				</div>
-				<div>number: <input value={newNumbers} onChange={handleNumberChange} /></div>
-				<div>
-					<button type="submit">add</button>
-				</div>
-			</form>
+				<button type="submit">add</button>
+			</form >
 			<h2>Numbers</h2>
 			<ul>
 				<ListName persons={showAllNumbers} />
 			</ul>
-		</div>
+		</div >
 	)
 }
 
