@@ -79,7 +79,6 @@ const App = () => {
 	const handleFindCountriesOnChange = (event) => {
 		setCountriesName(allCountries.map(x => x.name.official))
 		setFindCountry(event.target.value)
-		// console.log(findCountry);
 	}
 
 	const filteredCountry = countriesName.filter(x => x.toLowerCase().includes(findCountry.toLocaleLowerCase()))
