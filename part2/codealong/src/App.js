@@ -27,6 +27,7 @@ const App = () => {
 				setNotes(response.data)
 			})
 	}, [])
+
 	console.log('render', notes.length, 'notes');
 
 	const addNote = (event) => {
