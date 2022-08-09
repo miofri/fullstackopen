@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios';
 
+const api_key = process.env.REACT_APP_WEATHER_ID
+
 const FindCountries = ({ handleFindCountriesOnChange }) => {
 	return (
 		<div>
@@ -26,7 +28,26 @@ const ListCountries = ({ filteredCountry, allCountries }) => {
 		)
 	}
 	return (
-		filteredCountry.map(x => <li key={x}>{x}</li>)
+		<ul style={{
+			listStyle: "none"
+		}}>
+			{filteredCountry.map(x =>
+				<ButtonDetails key={x} x={x} allCountries={allCountries} />)
+			}
+		</ul >
+	)
+}
+
+// Each button component now has their own localised use state
+const ButtonDetails = ({ x, allCountries }) => {
+	const [ButtonDetails, setButtonDetails] = useState(false)
+	return (
+		<li key={x}>{x}<br></br>
+			<button onClick={() => handleCountryClick(ButtonDetails, setButtonDetails)}>show details</button>
+			{ButtonDetails ?
+				<DetailedResult filteredCountry={x} allCountries={allCountries} /> : <div></div>
+			} <br></br>
+		</li>
 	)
 }
 
@@ -36,14 +57,13 @@ const DetailedResult = ({ allCountries, filteredCountry }) => {
 
 	let capital = countryDetails.capital
 	if (capital.length > 1) {
-		capital = countryDetails.capital.map(x => <li>{x}</li>)
+		capital = countryDetails.capital.map(x => <li key={x}>{x}</li>)
 	}
 
 	let area = countryDetails.area
 
 	let languages = Object.values(countryDetails.languages).map(x => <li key={x}>{x}</li>)
 
-	console.log(countryDetails);
 	return (
 		<div>
 			<h2>{countryDetails.name.official}</h2>
@@ -58,9 +78,14 @@ const DetailedResult = ({ allCountries, filteredCountry }) => {
 			</ul>
 			<p>Flag:</p>
 			<img alt={countryDetails.name.official} width="250px" src={countryDetails.flags.svg} />
+			<br></br>
 
 		</div>
 	)
+}
+
+const handleCountryClick = (showMe, setShowMe) => {
+	return (setShowMe(showMe => !showMe))
 }
 
 const App = () => {
