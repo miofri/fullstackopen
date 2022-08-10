@@ -55,6 +55,8 @@ const DetailedResult = ({ allCountries, filteredCountry }) => {
 	let countryDetails = allCountries.filter(x => x.name.official.includes(filteredCountry))
 	countryDetails = countryDetails[0]
 
+	// console.log(countryDetails);
+
 	let capital = countryDetails.capital
 	if (capital.length > 1) {
 		capital = countryDetails.capital.map(x => <li key={x}>{x}</li>)
@@ -63,6 +65,8 @@ const DetailedResult = ({ allCountries, filteredCountry }) => {
 	let area = countryDetails.area
 
 	let languages = Object.values(countryDetails.languages).map(x => <li key={x}>{x}</li>)
+
+	let latlng = countryDetails.latlng
 
 	return (
 		<div>
@@ -79,13 +83,40 @@ const DetailedResult = ({ allCountries, filteredCountry }) => {
 			<p>Flag:</p>
 			<img alt={countryDetails.name.official} width="250px" src={countryDetails.flags.svg} />
 			<br></br>
-
+			<WeatherApp latlng={latlng} />
 		</div>
 	)
 }
 
 const handleCountryClick = (showMe, setShowMe) => {
 	return (setShowMe(showMe => !showMe))
+}
+
+const WeatherApp = ({ latlng }) => {
+	const [tempDetails, setTempDetails] = useState('')
+
+	let weatherURL = `https://api.openweathermap.org/data/2.5/weather?lat=${latlng[0]}&lon=${latlng[1]}&appid=${api_key}&units=metric`
+
+	useEffect(() => {
+		axios
+			.get(weatherURL)
+			.then(response => {
+				setTempDetails(response.data)
+			})
+	}, [weatherURL])
+
+	if (tempDetails.name !== undefined) {
+		let weatherIcon = `http://openweathermap.org/img/wn/${tempDetails.weather[0].icon}@2x.png`
+
+		return (
+			<div>
+				<h2>Weather in {tempDetails.name}</h2>
+				<p>Temperature: {tempDetails.main.temp} celcius</p>
+				<img src={weatherIcon} alt='weather icon' />
+				<p>Wind: {tempDetails.wind.speed} m/s</p>
+			</div>
+		)
+	}
 }
 
 const App = () => {
