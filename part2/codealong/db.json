@@ -27,7 +27,7 @@
     {
       "content": "MC Mio",
       "date": "2022-08-10T12:34:42.637Z",
-      "important": false,
+      "important": true,
       "id": 5
     }
   ]

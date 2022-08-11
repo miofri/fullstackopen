@@ -19,14 +19,15 @@ const App = () => {
 				setPersons(response.data)
 			})
 	}, [])
-	console.log('render', persons.length, 'notes');
 
+	// for finding if name already existed in the phonebook
 	const checkName = ({ persons }) => {
 		let names = []
 		names = persons.map(x => x.name)
 		return (names.includes(newName))
 	}
 
+	// adding a new personObj to
 	const addPerson = (event) => {
 
 		event.preventDefault()
