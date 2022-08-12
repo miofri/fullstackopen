@@ -3,13 +3,36 @@ import { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import ListName from "./components/ListName"
 import PersonForm from './components/PersonForm'
-import phonebookServices from './services/phonebook';
+import phonebookServices from './services/phonebook'
+import './index.css'
+
+const Notification = ({ message }) => {
+	if (message === null)
+		return (null)
+	return (
+		<div className='prompt'>
+			{message}
+		</div>
+	)
+}
+
+const Error = ({ message }) => {
+	if (message === null)
+		return (null)
+	return (
+		<div className='err'>
+			{message}
+		</div>
+	)
+}
 
 const App = () => {
 	const [persons, setPersons] = useState([])
 	const [newNumbers, setNumber] = useState('')
 	const [newName, setNewName] = useState('')
 	const [filtered, setFiltered] = useState('')
+	const [promptMsg, setPromptMsg] = useState(null)
+	const [errorMsg, setErrorMsg] = useState(null)
 
 	useEffect(() => {
 		phonebookServices.getAll()
@@ -37,9 +60,16 @@ const App = () => {
 				return (phonebookServices.updateNumber(changedNumber, changedPerson.id)
 					.then(response => {
 						setPersons(persons.map(x => x.id !== changedNumber.id ? x : response))
+						setPromptMsg(`updated ${response.name}'s number`)
+						setTimeout(() => { setPromptMsg(null) }, 5000)
 					})
-					.catch(err => console.log('update failed'))
-				)
+					.catch(err => {
+						setErrorMsg(`${changedPerson.name} is already deleted`)
+						setTimeout(() => {
+							setErrorMsg(null)
+						}, 5000)
+					}
+					))
 			}
 			else {
 				return event.preventDefault()
@@ -56,7 +86,10 @@ const App = () => {
 				setPersons(persons.concat(response))
 				setNewName('')
 				setNumber('')
+				setPromptMsg(`added ${response.name}`)
+				setTimeout(() => { setPromptMsg(null) }, 5000)
 			})
+
 	}
 
 	const handleDelete = (id, name) => {
@@ -64,10 +97,17 @@ const App = () => {
 			phonebookServices.deletePerson(id)
 				.then(
 					setPersons(persons.filter(persons =>
-						persons.id !== id
-					))
+						persons.id !== id)),
+					setPromptMsg(`deleted ${name}`),
+					setTimeout(() => { setPromptMsg(null) }, 5000)
 				)
-				.catch(err => console.log('delete failed'))
+				.catch(err => {
+					setErrorMsg(`${name} is already deleted`)
+					setTimeout(() => {
+						setErrorMsg(null)
+					}, 5000)
+				}
+				)
 		}
 
 	}
@@ -89,6 +129,8 @@ const App = () => {
 	return (
 		<div>
 			<h2>Phonebook</h2>
+			<Notification message={promptMsg} />
+			<Error message={errorMsg} />
 			<div>
 				<Filter handleFilter={handleFilter} />
 			</div>
