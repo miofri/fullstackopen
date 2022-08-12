@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios';
+// import axios from 'axios';
 import Filter from './components/Filter'
 import ListName from "./components/ListName"
 import PersonForm from './components/PersonForm'
+import phonebookServices from './services/phonebook';
 
 const App = () => {
 	const [persons, setPersons] = useState([])
@@ -11,13 +12,8 @@ const App = () => {
 	const [filtered, setFiltered] = useState('')
 
 	useEffect(() => {
-		console.log('effect');
-		axios
-			.get('http://localhost:3001/persons')
-			.then(response => {
-				console.log('promise fulfilled');
-				setPersons(response.data)
-			})
+		phonebookServices.getAll()
+			.then(response => setPersons(response))
 	}, [])
 
 	// for finding if name already existed in the phonebook
@@ -33,16 +29,47 @@ const App = () => {
 		event.preventDefault()
 
 		if (checkName({ persons }) === true) {
-			return event.preventDefault(alert(`${newName} is already added to phonebook`))
+			if (window.confirm(`${newName} is already added to the phonebook, replace old number with a new one?`)) {
+
+				const changedPerson = persons.find(n => n.name === newName)
+				const changedNumber = { ...changedPerson, number: newNumbers }
+
+				return (phonebookServices.updateNumber(changedNumber, changedPerson.id)
+					.then(response => {
+						setPersons(persons.map(x => x.id !== changedNumber.id ? x : response))
+					})
+					.catch(err => console.log('update failed'))
+				)
+			}
+			else {
+				return event.preventDefault()
+			}
 		}
 
 		const personObj = {
 			name: newName,
 			number: newNumbers,
 		}
-		setPersons(persons.concat(personObj))
-		setNewName('')
-		setNumber('')
+
+		phonebookServices.createPerson(personObj)
+			.then(response => {
+				setPersons(persons.concat(response))
+				setNewName('')
+				setNumber('')
+			})
+	}
+
+	const handleDelete = (id, name) => {
+		if (window.confirm(`Delete ${name}?`)) {
+			phonebookServices.deletePerson(id)
+				.then(
+					setPersons(persons.filter(persons =>
+						persons.id !== id
+					))
+				)
+				.catch(err => console.log('delete failed'))
+		}
+
 	}
 
 	const handlePersonChange = (event) => {
@@ -73,9 +100,7 @@ const App = () => {
 				<button type="submit">add</button>
 			</form >
 			<h2>Numbers</h2>
-			<ul>
-				<ListName persons={showAllNumbers} />
-			</ul>
+			<ListName persons={showAllNumbers} handleDelete={handleDelete} />
 		</div >
 	)
 }
