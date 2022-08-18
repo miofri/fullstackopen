@@ -1,8 +1,7 @@
 const { request, response } = require('express')
 const express = require('express')
 const app = express()
-
-app.use(express.json())
+const morgan = require('morgan');
 
 let phonebook = [
 	{
@@ -26,6 +25,25 @@ let phonebook = [
 		"number": "39-23-6423122"
 	}
 ]
+
+app.use(express.json())
+
+// Morgan-post section
+
+// Custom morgan token('token name', function callback). I used res since using req will mess with the app.post's body and set it to undefined.)
+morgan.token('resbody', function (res) {
+	if (res.body)
+		return JSON.stringify(res.body)
+
+})
+
+// Need a var outside of the post scope to use in getBody func.
+let body2
+
+// Calling getBody will assign app.post's body to the response, so that morgan.token can use it for :resbody.
+app.use(getBody)
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :resbody'))
+
 
 app.get('/', (request, response) => {
 	response.send('<h1>Hello world</h1>')
@@ -78,7 +96,7 @@ const generateId = () => {
 	}
 
 	if (loopguard === maxNum) {
-		console.log("All possible IDs had alraedy been taken!")
+		console.log("All possible IDs had already been taken!")
 	}
 }
 
@@ -87,7 +105,16 @@ app.post('/api/persons', (request, response) => {
 
 	if (!body.name || !body.number) {
 		return (response.status(400).json({
-			error: 'content missing'
+			error: 'name or/and number are missing'
+		}))
+	}
+	else if (
+		(phonebook.map(data => data.name.toLowerCase())
+			.includes(body.name.toLowerCase())
+		)
+	) {
+		return (response.status(400).json({
+			error: 'name already exists in the phonebook.'
 		}))
 	}
 
@@ -98,9 +125,23 @@ app.post('/api/persons', (request, response) => {
 	}
 
 	phonebook = phonebook.concat(num)
-
 	response.json(num)
+
+	body2 = body
 })
+
+function getBody(req, res, next) {
+	res.body = body2
+	next()
+}
+
+const unknownEndpoint = (request, response) => {
+	response.status(404).send({
+		error: "Not found"
+	})
+}
+
+app.use(unknownEndpoint)
 
 const PORT = 3002
 app.listen(PORT, () => {

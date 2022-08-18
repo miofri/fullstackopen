@@ -10,9 +10,9 @@ POST http://localhost:3002/api/persons
 Content-Type: application/json
 
 {
-	"name": "AVV",
-	"number": "044-044044"
-}
+	"name": "Test Hellas",
+	"number": "040-123456"
+	}
 
 ###
 
