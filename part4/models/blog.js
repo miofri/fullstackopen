@@ -1,9 +1,9 @@
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const mongoose = require('mongoose')
-const mongoUrl = process.env.MONGO_URI
+const config = require('../utils/config');
 
-console.log('connecting to', mongoUrl)
+console.log('connecting to', config.MONGO_URI)
 
 const blogSchema = new mongoose.Schema({
 	title: String,
@@ -21,22 +21,5 @@ blogSchema.set('toJSON', {
 })
 
 const Blog = mongoose.model('Blog', blogSchema)
-
-mongoose.connect(mongoUrl)
-	.then(() => {
-		console.log("connected")
-		// if (process.argv.length > 4) {
-		// 	const test = new Blog({
-		// 		title: process.argv[2],
-		// 		author: process.argv[3],
-		// 		url: process.argv[4],
-		// 		likes: process.argv[5]
-		// 	})
-		// 	test.save()
-		// 		.then(() =>
-		// 			console.log('save successful')
-		// 		)
-		// }
-	})
 
 module.exports = mongoose.model('Blog', blogSchema)
