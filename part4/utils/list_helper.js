@@ -9,7 +9,7 @@ const totalLikes = (array) => {
 	return array.reduce((x, y) => x + y)
 }
 
-const favouriteBlog = (array) => {
+const favoriteBlog = (array) => {
 	let likes = array.map(x => x.likes)
 	let maxVal = Math.max(...likes)
 
@@ -71,7 +71,7 @@ const mostLikes = (array) => {
 module.exports = {
 	dummy,
 	totalLikes,
-	favouriteBlog,
+	favoriteBlog,
 	mostBlogs,
 	mostLikes
 }
