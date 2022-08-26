@@ -1,18 +1,19 @@
 const express = require('express')
 const app = express()
 const cors = require('cors')
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
+// eslint-disable-next-line no-unused-vars
 const Blog = require('./models/blog')
-const blogRouter = require('./controller/bloglist');
-const config = require('./utils/config');
+const blogRouter = require('./controller/bloglist')
+const config = require('./utils/config')
 
 app.get('/', (request, response) => {
-	response.send("<h1>A</h1>")
+	response.send('<h1>A</h1>')
 })
 
 mongoose.connect(config.MONGO_URI)
 	.then(() => {
-		console.log("connected")
+		console.log('connected')
 	})
 
 app.use(cors())

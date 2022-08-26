@@ -1,7 +1,7 @@
-const path = require("path");
-require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
+const path = require('path')
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
 const mongoose = require('mongoose')
-const config = require('../utils/config');
+const config = require('../utils/config')
 
 console.log('connecting to', config.MONGO_URI)
 
@@ -19,7 +19,5 @@ blogSchema.set('toJSON', {
 		delete returnedObject.__v
 	}
 })
-
-const Blog = mongoose.model('Blog', blogSchema)
 
 module.exports = mongoose.model('Blog', blogSchema)
