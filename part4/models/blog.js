@@ -6,8 +6,11 @@ const config = require('../utils/config')
 console.log('connecting to', config.MONGO_URI)
 
 const blogSchema = new mongoose.Schema({
+	author: {
+		type: String,
+		required: true,
+	},
 	title: String,
-	author: String,
 	url: String,
 	likes: Number
 })
