@@ -8,7 +8,7 @@ const blogRouter = require('./controller/bloglist')
 const config = require('./utils/config')
 
 app.get('/', (request, response) => {
-	response.send('<h1>A</h1>')
+	response.send('<h1>Blog List</h1>')
 })
 
 mongoose.connect(config.MONGO_URI)
