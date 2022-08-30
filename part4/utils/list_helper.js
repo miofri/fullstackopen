@@ -1,9 +1,5 @@
 const _ = require('lodash')
 
-const dummy = () => {
-	return 1
-}
-
 const totalLikes = (array) => {
 	array = array.map(x => x.likes)
 	return array.reduce((x, y) => x + y)
@@ -69,7 +65,6 @@ const mostLikes = (array) => {
 }
 
 module.exports = {
-	dummy,
 	totalLikes,
 	favoriteBlog,
 	mostBlogs,

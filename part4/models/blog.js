@@ -6,13 +6,19 @@ const config = require('../utils/config')
 console.log('connecting to', config.MONGO_URI)
 
 const blogSchema = new mongoose.Schema({
-	author: {
+	author: String,
+	title: {
 		type: String,
 		required: true,
 	},
-	title: String,
-	url: String,
-	likes: Number
+	url: {
+		type: String,
+		required: true,
+	},
+	likes: {
+		type: Number,
+		default: 0
+	}
 })
 
 blogSchema.set('toJSON', {
