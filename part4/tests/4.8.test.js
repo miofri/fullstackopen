@@ -87,6 +87,7 @@ describe('blogs', () => {
 			author: 'Jimmothy Beamers',
 			title: 'How to parse 98%',
 			likes: 420,
+			url: 'Hello guys'
 		}
 
 		await api.post('/api/blogs')
