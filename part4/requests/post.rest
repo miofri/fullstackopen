@@ -11,3 +11,7 @@ content-type: application/json
 ###
 
 GET http://localhost:3003/
+
+###
+
+GET http://localhost:3001/
